@@ -54,22 +54,27 @@ function load<T>(key: string, fallback: T): T {
   }
 }
 
-type Tab = 'why' | 'products' | 'buy';
+type Tab = 'main' | 'why' | 'products' | 'buy';
+
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'main', label: 'Главная' },
+  { id: 'buy', label: 'Купить' },
+  { id: 'products', label: 'Товары' },
+  { id: 'why', label: 'Почему' },
+];
 
 const Index = () => {
-  const [tab, setTab] = useState<Tab>('why');
+  const [tab, setTab] = useState<Tab>('main');
   const [products, setProducts] = useState<Product[]>(() =>
     load('rbx_products', DEFAULT_PRODUCTS),
   );
   const [settings, setSettings] = useState<Settings>(() =>
     load('rbx_settings', DEFAULT_SETTINGS),
   );
-
   const [authUser, setAuthUser] = useState<string | null>(() =>
     load<string | null>('rbx_current', null),
   );
   const [isAdmin, setIsAdmin] = useState(false);
-
   const [showAuth, setShowAuth] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
   const [showMogged, setShowMogged] = useState(false);
@@ -91,7 +96,7 @@ const Index = () => {
       <header className="sticky top-0 z-40 glass border-b border-primary/30">
         <div className="container flex items-center justify-between py-3">
           <button
-            onClick={() => setTab('why')}
+            onClick={() => setTab('main')}
             className="flex items-center gap-2 hover-scale"
           >
             <img
@@ -101,18 +106,18 @@ const Index = () => {
             />
           </button>
 
-          <nav className="hidden md:flex gap-2 font-display text-sm">
-            {(['buy', 'products', 'why'] as Tab[]).map((t) => (
+          <nav className="hidden md:flex gap-1 font-display text-sm">
+            {TABS.map((t) => (
               <button
-                key={t}
-                onClick={() => setTab(t)}
+                key={t.id}
+                onClick={() => setTab(t.id)}
                 className={`px-4 py-2 rounded-md uppercase tracking-wider transition ${
-                  tab === t
-                    ? 'bg-primary text-primary-foreground neon-box'
+                  tab === t.id
+                    ? 'bg-primary text-white neon-box'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
-                {t === 'buy' ? 'Купить' : t === 'products' ? 'Товары' : 'Почему'}
+                {t.label}
               </button>
             ))}
           </nav>
@@ -120,31 +125,24 @@ const Index = () => {
           <div className="flex items-center gap-2">
             {authUser ? (
               <>
-                <span className="hidden sm:block text-sm text-muted-foreground">
+                <span className="hidden sm:block text-sm text-muted-foreground font-body">
                   {authUser}
                 </span>
                 {isAdmin && (
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => setShowAdmin(true)}
-                  >
+                  <Button size="sm" variant="secondary" onClick={() => setShowAdmin(true)}>
                     <Icon name="Settings" size={16} /> Админка
                   </Button>
                 )}
                 <Button
                   size="sm"
                   variant="ghost"
-                  onClick={() => {
-                    setAuthUser(null);
-                    setIsAdmin(false);
-                  }}
+                  onClick={() => { setAuthUser(null); setIsAdmin(false); }}
                 >
                   <Icon name="LogOut" size={16} />
                 </Button>
               </>
             ) : (
-              <Button size="sm" onClick={() => setShowAuth(true)}>
+              <Button size="sm" className="font-display uppercase tracking-wider bg-gradient-to-r from-primary to-accent" onClick={() => setShowAuth(true)}>
                 Войти
               </Button>
             )}
@@ -152,36 +150,73 @@ const Index = () => {
         </div>
 
         {/* mobile nav */}
-        <nav className="md:hidden flex justify-center gap-2 pb-3 font-display text-xs">
-          {(['buy', 'products', 'why'] as Tab[]).map((t) => (
+        <nav className="md:hidden flex justify-center gap-1 pb-3 font-display text-xs overflow-x-auto px-4">
+          {TABS.map((t) => (
             <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`px-3 py-1.5 rounded-md uppercase ${
-                tab === t ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className={`px-3 py-1.5 rounded-md uppercase whitespace-nowrap transition ${
+                tab === t.id ? 'bg-primary text-white' : 'text-muted-foreground'
               }`}
             >
-              {t === 'buy' ? 'Купить' : t === 'products' ? 'Товары' : 'Почему'}
+              {t.label}
             </button>
           ))}
         </nav>
       </header>
 
-      {/* WHY TAB */}
+      {/* ═══════════════ MAIN TAB ═══════════════ */}
+      {tab === 'main' && (
+        <section className="relative grid-bg overflow-hidden min-h-[calc(100vh-73px)] flex items-center justify-center">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background pointer-events-none" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[70vw] h-[70vw] max-w-[800px] max-h-[800px] rounded-full bg-primary/20 blur-[140px] pointer-events-none" />
+
+          <div className="relative z-10 text-center px-4 animate-fade-in flex flex-col items-center">
+            <img
+              src={LOGO}
+              alt="TEKKO AKKZ"
+              className="w-[85vw] max-w-lg mx-auto mb-4 object-contain animate-float drop-shadow-[0_0_50px_rgba(170,90,255,0.6)]"
+            />
+            <h2
+              className="font-display text-2xl md:text-4xl uppercase tracking-widest chrome-text mt-2"
+              style={{ letterSpacing: '0.12em' }}
+            >
+              Самые дешевые аккаунты в Roblox
+            </h2>
+            <p className="mt-4 text-muted-foreground font-body uppercase tracking-[0.35em] text-xs">
+              y2k rave · hardtek · jumpstyle · 2000s
+            </p>
+            <div className="mt-10 flex flex-col sm:flex-row gap-4">
+              <Button
+                size="lg"
+                className="font-display uppercase tracking-widest px-10 py-6 neon-box hover-scale bg-gradient-to-r from-primary to-accent"
+                onClick={() => setTab('products')}
+              >
+                <Icon name="Zap" size={20} /> Смотреть товары
+              </Button>
+              <Button
+                size="lg"
+                variant="secondary"
+                className="font-display uppercase tracking-widest px-10 py-6 hover-scale glass"
+                onClick={() => setTab('buy')}
+              >
+                <Icon name="ShoppingCart" size={20} /> Купить
+              </Button>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ═══════════════ WHY TAB ═══════════════ */}
       {tab === 'why' && (
         <section className="relative grid-bg overflow-hidden min-h-[calc(100vh-73px)] flex items-center justify-center">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background pointer-events-none" />
           <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[60vw] h-[60vw] max-w-[700px] max-h-[700px] rounded-full bg-primary/25 blur-[120px] pointer-events-none" />
           <div className="relative z-10 text-center px-4 animate-fade-in">
-            <img
-              src={LOGO}
-              alt="TEKKO AKKZ"
-              className="w-[80vw] max-w-md mx-auto mb-6 object-contain animate-float drop-shadow-[0_0_40px_rgba(170,90,255,0.55)]"
-            />
-            <h1 className="font-display font-black chrome-text leading-none text-[15vw] md:text-[9vw] uppercase tracking-tight">
+            <h1 className="font-display font-black chrome-text leading-none text-[18vw] md:text-[11vw] uppercase tracking-tight">
               {settings.whyTitle}
             </h1>
-            <p className="mt-3 text-muted-foreground font-body uppercase tracking-[0.3em] text-xs md:text-sm">
+            <p className="mt-4 text-muted-foreground font-body uppercase tracking-[0.3em] text-xs md:text-sm">
               roblox accounts · y2k hardtek
             </p>
             <button
@@ -189,7 +224,7 @@ const Index = () => {
                 setShowMogged(true);
                 setTimeout(() => setShowMogged(false), 2500);
               }}
-              className="mt-10 font-display text-lg uppercase tracking-widest px-10 py-4 rounded-xl bg-gradient-to-r from-primary to-accent text-primary-foreground neon-box hover-scale"
+              className="mt-10 font-display text-lg uppercase tracking-widest px-10 py-4 rounded-xl bg-gradient-to-r from-primary to-accent text-white neon-box hover-scale"
             >
               По капусте 🥬
             </button>
@@ -208,21 +243,21 @@ const Index = () => {
         </section>
       )}
 
-      {/* PRODUCTS TAB */}
+      {/* ═══════════════ PRODUCTS TAB ═══════════════ */}
       {tab === 'products' && (
         <section className="container py-14 animate-fade-in">
           <div className="flex items-end justify-between mb-10">
-            <h2 className="font-display text-4xl md:text-5xl font-black uppercase chrome-text">
+            <h2 className="font-display text-4xl md:text-5xl uppercase chrome-text">
               Товары
             </h2>
-            <span className="font-display text-sm text-muted-foreground uppercase tracking-widest">
+            <span className="font-orb text-sm text-muted-foreground uppercase tracking-widest">
               {products.length} шт.
             </span>
           </div>
           {products.length === 0 ? (
             <div className="glass rounded-2xl p-16 text-center text-muted-foreground">
               <Icon name="PackageOpen" size={48} className="mx-auto mb-4 opacity-50" />
-              Пока нет товаров.
+              <p className="font-display uppercase tracking-widest">Пока нет товаров</p>
             </div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -240,16 +275,16 @@ const Index = () => {
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
-                      <span className="absolute top-3 right-3 font-display text-sm font-black px-3 py-1 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground">
+                      <span className="absolute top-3 right-3 font-display text-sm px-3 py-1 rounded-full bg-gradient-to-r from-primary to-accent text-white">
                         {p.price}
                       </span>
                     </div>
                   )}
                   <div className="p-5">
-                    <h3 className="font-display text-lg font-bold uppercase tracking-wide">
+                    <h3 className="font-display text-lg uppercase tracking-wide">
                       {p.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground mt-2 min-h-[40px]">
+                    <p className="text-sm text-muted-foreground mt-2 font-body min-h-[40px]">
                       {p.desc}
                     </p>
                     <Button
@@ -266,7 +301,7 @@ const Index = () => {
         </section>
       )}
 
-      {/* BUY TAB */}
+      {/* ═══════════════ BUY TAB ═══════════════ */}
       {tab === 'buy' && (
         <section className="relative container py-24 flex flex-col items-center animate-fade-in">
           <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[50vw] h-[50vw] max-w-[500px] max-h-[500px] rounded-full bg-accent/20 blur-[120px] pointer-events-none" />
@@ -275,7 +310,7 @@ const Index = () => {
             alt="TEKKO AKKZ"
             className="relative w-56 mb-8 object-contain animate-float drop-shadow-[0_0_30px_rgba(170,90,255,0.5)]"
           />
-          <h2 className="relative font-display text-4xl md:text-6xl font-black uppercase chrome-text text-center mb-12">
+          <h2 className="relative font-display text-4xl md:text-5xl uppercase chrome-text text-center mb-12">
             Купить аккаунт
           </h2>
           {!buyOpen ? (
@@ -354,7 +389,7 @@ const Index = () => {
   );
 };
 
-/* ---------- AUTH ---------- */
+/* ─── AUTH ─── */
 const AuthModal = ({
   onClose,
   onLogin,
@@ -375,36 +410,24 @@ const AuthModal = ({
             <Icon name="X" size={20} />
           </button>
         </div>
-        <h3 className="font-display text-xl font-black uppercase chrome-text mb-5">
+        <h3 className="font-display text-xl uppercase chrome-text mb-5">
           Вход / Регистрация
         </h3>
         <div className="space-y-3">
-          <Input
-            placeholder="Логин"
-            value={login}
-            onChange={(e) => setLogin(e.target.value)}
-          />
-          <Input
-            type="password"
-            placeholder="Пароль"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {err && <p className="text-destructive text-sm">{err}</p>}
+          <Input placeholder="Логин" value={login} onChange={(e) => setLogin(e.target.value)} />
+          <Input type="password" placeholder="Пароль" value={password} onChange={(e) => setPassword(e.target.value)} />
+          {err && <p className="text-destructive text-sm font-body">{err}</p>}
           <Button
             className="w-full font-display uppercase tracking-wider bg-gradient-to-r from-primary to-accent"
             onClick={() => {
-              if (!login || !password) {
-                setErr('Заполните все поля');
-                return;
-              }
+              if (!login || !password) { setErr('Заполните все поля'); return; }
               const res = onLogin(login.trim(), password);
               if (res) setErr(res);
             }}
           >
             Войти
           </Button>
-          <p className="text-xs text-muted-foreground text-center">
+          <p className="text-xs text-muted-foreground text-center font-body">
             Нет аккаунта? Введите логин и пароль — мы создадим его автоматически.
           </p>
         </div>
@@ -413,7 +436,7 @@ const AuthModal = ({
   );
 };
 
-/* ---------- ADMIN ---------- */
+/* ─── ADMIN ─── */
 const AdminPanel = ({
   products,
   setProducts,
@@ -439,9 +462,7 @@ const AdminPanel = ({
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <img src={LOGO} alt="TEKKO AKKZ" className="h-9 w-auto object-contain" />
-            <h3 className="font-display text-2xl font-black uppercase chrome-text">
-              Админка
-            </h3>
+            <h3 className="font-display text-2xl uppercase chrome-text">Админка</h3>
           </div>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
             <Icon name="X" size={22} />
@@ -457,20 +478,14 @@ const AdminPanel = ({
             <Input placeholder="Название" value={title} onChange={(e) => setTitle(e.target.value)} />
             <Input placeholder="Цена (напр. 499 ₽)" value={price} onChange={(e) => setPrice(e.target.value)} />
           </div>
-          <Input className="mt-3" placeholder="Ссылка на изображение (необязательно)" value={image} onChange={(e) => setImage(e.target.value)} />
+          <Input className="mt-3" placeholder="Ссылка на изображение" value={image} onChange={(e) => setImage(e.target.value)} />
           <Textarea className="mt-3" placeholder="Описание" value={desc} onChange={(e) => setDesc(e.target.value)} />
           <Button
-            className="mt-3 font-display uppercase tracking-wider"
+            className="mt-3 font-display uppercase tracking-wider bg-gradient-to-r from-primary to-accent"
             onClick={() => {
               if (!title || !price) return;
-              setProducts([
-                ...products,
-                { id: Date.now(), title, price, desc, image },
-              ]);
-              setTitle('');
-              setPrice('');
-              setDesc('');
-              setImage('');
+              setProducts([...products, { id: Date.now(), title, price, desc, image }]);
+              setTitle(''); setPrice(''); setDesc(''); setImage('');
             }}
           >
             <Icon name="Plus" size={18} /> Добавить
@@ -480,21 +495,15 @@ const AdminPanel = ({
         {/* Product list */}
         <div className="mb-8">
           <h4 className="font-display uppercase text-sm tracking-wider text-accent mb-3">
-            Товары ({products.length})
+            Список товаров ({products.length})
           </h4>
           <div className="space-y-2">
             {products.map((p) => (
-              <div
-                key={p.id}
-                className="flex items-center justify-between gap-3 rounded-lg bg-secondary px-4 py-2"
-              >
-                <span className="truncate">
-                  <b>{p.title}</b> — {p.price}
+              <div key={p.id} className="flex items-center justify-between gap-3 rounded-lg bg-secondary/50 px-4 py-2">
+                <span className="truncate font-body">
+                  <b className="font-display">{p.title}</b> — {p.price}
                 </span>
-                <button
-                  onClick={() => setProducts(products.filter((x) => x.id !== p.id))}
-                  className="text-destructive"
-                >
+                <button onClick={() => setProducts(products.filter((x) => x.id !== p.id))} className="text-destructive">
                   <Icon name="Trash2" size={18} />
                 </button>
               </div>
@@ -508,22 +517,27 @@ const AdminPanel = ({
             Настройки сайта и ссылок
           </h4>
           <div className="space-y-3">
-            <label className="text-xs text-muted-foreground">Текст на вкладке «Почему»</label>
-            <Input value={local.whyTitle} onChange={(e) => setLocal({ ...local, whyTitle: e.target.value })} />
-            <label className="text-xs text-muted-foreground">Картинка на вкладке «Почему»</label>
-            <Input value={local.capybaraImage} onChange={(e) => setLocal({ ...local, capybaraImage: e.target.value })} />
-            <label className="text-xs text-muted-foreground">Ссылка на Телеграм канал</label>
-            <Input value={local.telegramChannel} onChange={(e) => setLocal({ ...local, telegramChannel: e.target.value })} />
-            <label className="text-xs text-muted-foreground">Ссылка на профиль (кнопка «Купить»)</label>
-            <Input value={local.buyProfile} onChange={(e) => setLocal({ ...local, buyProfile: e.target.value })} />
+            <div>
+              <label className="text-xs text-muted-foreground font-body block mb-1">Текст на вкладке «Почему»</label>
+              <Input value={local.whyTitle} onChange={(e) => setLocal({ ...local, whyTitle: e.target.value })} />
+            </div>
+            <div>
+              <label className="text-xs text-muted-foreground font-body block mb-1">Картинка на вкладке «Почему»</label>
+              <Input value={local.capybaraImage} onChange={(e) => setLocal({ ...local, capybaraImage: e.target.value })} />
+            </div>
+            <div>
+              <label className="text-xs text-muted-foreground font-body block mb-1">Ссылка на Телеграм канал</label>
+              <Input value={local.telegramChannel} onChange={(e) => setLocal({ ...local, telegramChannel: e.target.value })} />
+            </div>
+            <div>
+              <label className="text-xs text-muted-foreground font-body block mb-1">Ссылка на профиль (кнопка «Купить»)</label>
+              <Input value={local.buyProfile} onChange={(e) => setLocal({ ...local, buyProfile: e.target.value })} />
+            </div>
             <Button
-              className="font-display uppercase tracking-wider"
-              onClick={() => {
-                setSettings(local);
-                onClose();
-              }}
+              className="font-display uppercase tracking-wider bg-gradient-to-r from-primary to-accent"
+              onClick={() => { setSettings(local); onClose(); }}
             >
-              <Icon name="Save" size={18} /> Сохранить настройки
+              <Icon name="Save" size={18} /> Сохранить
             </Button>
           </div>
         </div>

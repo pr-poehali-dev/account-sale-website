@@ -19,7 +19,8 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				display: ['Orbitron', 'sans-serif'],
+				display: ['Black Ops One', 'sans-serif'],
+				orb: ['Orbitron', 'sans-serif'],
 				body: ['Rubik', 'sans-serif'],
 			},
 			colors: {
