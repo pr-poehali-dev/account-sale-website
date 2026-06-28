@@ -115,9 +115,10 @@
 @layer utilities {
   .grid-bg {
     background-image:
-      linear-gradient(hsl(275 90% 62% / 0.12) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(275 90% 62% / 0.12) 1px, transparent 1px);
-    background-size: 40px 40px;
+      linear-gradient(hsl(275 90% 62% / 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(275 90% 62% / 0.1) 1px, transparent 1px);
+    background-size: 44px 44px;
+    animation: grid-move 1.5s linear infinite;
   }
   .neon-text {
     text-shadow:
@@ -129,7 +130,48 @@
       0 0 0 1px hsl(275 90% 62% / 0.4),
       0 0 30px hsl(275 90% 62% / 0.35);
   }
+  .glass {
+    background: hsl(268 50% 9% / 0.55);
+    backdrop-filter: blur(14px);
+    border: 1px solid hsl(275 90% 62% / 0.22);
+  }
+  .chrome-text {
+    background: linear-gradient(
+      180deg,
+      #fff 0%,
+      #c9b8ff 35%,
+      #7c4dff 55%,
+      #ff7ae0 80%,
+      #ffb86c 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 18px hsl(280 90% 60% / 0.55));
+  }
   .hover-scale {
     @apply transition-transform duration-300 hover:scale-105;
   }
+  .card-glow {
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  .card-glow:hover {
+    transform: translateY(-6px);
+    box-shadow:
+      0 0 0 1px hsl(300 90% 60% / 0.6),
+      0 12px 40px hsl(280 90% 50% / 0.45);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(268 50% 7%);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(hsl(275 90% 55%), hsl(300 90% 55%));
+  border-radius: 8px;
 }

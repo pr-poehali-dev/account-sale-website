@@ -23,6 +23,9 @@ type User = { login: string; password: string };
 
 const ADMIN = { login: 'rekko', password: '09082606' };
 
+const LOGO =
+  'https://cdn.poehali.dev/projects/be822d67-e606-4cde-a4c9-6361944f02f7/bucket/0af2268f-b89c-4984-b650-296bb326d0f8.png';
+
 const DEFAULT_SETTINGS: Settings = {
   capybaraImage:
     'https://cdn.poehali.dev/projects/be822d67-e606-4cde-a4c9-6361944f02f7/files/e1e19650-8c06-4471-8cd8-1d6c1386cfe0.jpg',
@@ -85,13 +88,17 @@ const Index = () => {
   return (
     <div className="min-h-screen text-foreground">
       {/* HEADER */}
-      <header className="sticky top-0 z-40 backdrop-blur-md border-b border-primary/30 bg-background/70">
-        <div className="container flex items-center justify-between py-4">
+      <header className="sticky top-0 z-40 glass border-b border-primary/30">
+        <div className="container flex items-center justify-between py-3">
           <button
             onClick={() => setTab('why')}
-            className="font-display text-2xl font-black tracking-widest neon-text"
+            className="flex items-center gap-2 hover-scale"
           >
-            RBX<span className="text-accent">.SHOP</span>
+            <img
+              src={LOGO}
+              alt="TEKKO AKKZ"
+              className="h-10 md:h-12 w-auto object-contain drop-shadow-[0_0_12px_rgba(170,90,255,0.6)]"
+            />
           </button>
 
           <nav className="hidden md:flex gap-2 font-display text-sm">
@@ -164,21 +171,25 @@ const Index = () => {
       {tab === 'why' && (
         <section className="relative grid-bg overflow-hidden min-h-[calc(100vh-73px)] flex items-center justify-center">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background pointer-events-none" />
+          <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[60vw] h-[60vw] max-w-[700px] max-h-[700px] rounded-full bg-primary/25 blur-[120px] pointer-events-none" />
           <div className="relative z-10 text-center px-4 animate-fade-in">
             <img
-              src={settings.capybaraImage}
-              alt="capy"
-              className="w-56 h-56 md:w-72 md:h-72 object-cover rounded-3xl mx-auto mb-8 neon-box animate-float"
+              src={LOGO}
+              alt="TEKKO AKKZ"
+              className="w-[80vw] max-w-md mx-auto mb-6 object-contain animate-float drop-shadow-[0_0_40px_rgba(170,90,255,0.55)]"
             />
-            <h1 className="font-display font-black neon-text leading-none text-[15vw] md:text-[10vw] uppercase">
+            <h1 className="font-display font-black chrome-text leading-none text-[15vw] md:text-[9vw] uppercase tracking-tight">
               {settings.whyTitle}
             </h1>
+            <p className="mt-3 text-muted-foreground font-body uppercase tracking-[0.3em] text-xs md:text-sm">
+              roblox accounts · y2k hardtek
+            </p>
             <button
               onClick={() => {
                 setShowMogged(true);
                 setTimeout(() => setShowMogged(false), 2500);
               }}
-              className="mt-10 font-display text-lg uppercase tracking-widest px-10 py-4 rounded-xl bg-primary text-primary-foreground neon-box hover-scale"
+              className="mt-10 font-display text-lg uppercase tracking-widest px-10 py-4 rounded-xl bg-gradient-to-r from-primary to-accent text-primary-foreground neon-box hover-scale"
             >
               По капусте 🥬
             </button>
@@ -199,41 +210,53 @@ const Index = () => {
 
       {/* PRODUCTS TAB */}
       {tab === 'products' && (
-        <section className="container py-12 animate-fade-in">
-          <h2 className="font-display text-4xl font-black uppercase neon-text mb-8">
-            Товары
-          </h2>
+        <section className="container py-14 animate-fade-in">
+          <div className="flex items-end justify-between mb-10">
+            <h2 className="font-display text-4xl md:text-5xl font-black uppercase chrome-text">
+              Товары
+            </h2>
+            <span className="font-display text-sm text-muted-foreground uppercase tracking-widest">
+              {products.length} шт.
+            </span>
+          </div>
           {products.length === 0 ? (
-            <p className="text-muted-foreground">Пока нет товаров.</p>
+            <div className="glass rounded-2xl p-16 text-center text-muted-foreground">
+              <Icon name="PackageOpen" size={48} className="mx-auto mb-4 opacity-50" />
+              Пока нет товаров.
+            </div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {products.map((p) => (
+              {products.map((p, i) => (
                 <div
                   key={p.id}
-                  className="rounded-2xl bg-card border border-primary/30 overflow-hidden hover-scale neon-box"
+                  className="card-glow rounded-2xl glass overflow-hidden animate-scale-in"
+                  style={{ animationDelay: `${i * 70}ms` }}
                 >
                   {p.image && (
-                    <img
-                      src={p.image}
-                      alt={p.title}
-                      className="w-full h-44 object-cover"
-                    />
-                  )}
-                  <div className="p-5">
-                    <div className="flex items-center justify-between gap-2">
-                      <h3 className="font-display text-lg font-bold uppercase">
-                        {p.title}
-                      </h3>
-                      <span className="font-display text-accent font-black whitespace-nowrap">
+                    <div className="relative h-44 overflow-hidden">
+                      <img
+                        src={p.image}
+                        alt={p.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+                      <span className="absolute top-3 right-3 font-display text-sm font-black px-3 py-1 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground">
                         {p.price}
                       </span>
                     </div>
-                    <p className="text-sm text-muted-foreground mt-2">{p.desc}</p>
+                  )}
+                  <div className="p-5">
+                    <h3 className="font-display text-lg font-bold uppercase tracking-wide">
+                      {p.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-2 min-h-[40px]">
+                      {p.desc}
+                    </p>
                     <Button
-                      className="w-full mt-4"
+                      className="w-full mt-4 font-display uppercase tracking-wider bg-gradient-to-r from-primary to-accent"
                       onClick={() => setTab('buy')}
                     >
-                      Купить
+                      <Icon name="Zap" size={16} /> Купить
                     </Button>
                   </div>
                 </div>
@@ -245,25 +268,31 @@ const Index = () => {
 
       {/* BUY TAB */}
       {tab === 'buy' && (
-        <section className="container py-16 flex flex-col items-center animate-fade-in">
-          <h2 className="font-display text-4xl md:text-6xl font-black uppercase neon-text text-center mb-12">
+        <section className="relative container py-24 flex flex-col items-center animate-fade-in">
+          <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[50vw] h-[50vw] max-w-[500px] max-h-[500px] rounded-full bg-accent/20 blur-[120px] pointer-events-none" />
+          <img
+            src={LOGO}
+            alt="TEKKO AKKZ"
+            className="relative w-56 mb-8 object-contain animate-float drop-shadow-[0_0_30px_rgba(170,90,255,0.5)]"
+          />
+          <h2 className="relative font-display text-4xl md:text-6xl font-black uppercase chrome-text text-center mb-12">
             Купить аккаунт
           </h2>
           {!buyOpen ? (
             <Button
               size="lg"
-              className="font-display text-xl uppercase tracking-widest px-12 py-7 neon-box hover-scale"
+              className="relative font-display text-xl uppercase tracking-widest px-12 py-7 neon-box hover-scale bg-gradient-to-r from-primary to-accent"
               onClick={() => setBuyOpen(true)}
             >
               <Icon name="ShoppingCart" size={22} /> Открыть
             </Button>
           ) : (
-            <div className="flex flex-col sm:flex-row gap-5 animate-scale-in">
+            <div className="relative flex flex-col sm:flex-row gap-5 animate-scale-in">
               <a href={settings.telegramChannel} target="_blank" rel="noreferrer">
                 <Button
                   size="lg"
                   variant="secondary"
-                  className="font-display uppercase tracking-wider px-10 py-7 hover-scale"
+                  className="w-full font-display uppercase tracking-wider px-10 py-7 hover-scale glass"
                 >
                   <Icon name="Send" size={20} /> Телеграм канал
                 </Button>
@@ -271,7 +300,7 @@ const Index = () => {
               <a href={settings.buyProfile} target="_blank" rel="noreferrer">
                 <Button
                   size="lg"
-                  className="font-display uppercase tracking-wider px-10 py-7 neon-box hover-scale"
+                  className="w-full font-display uppercase tracking-wider px-10 py-7 neon-box hover-scale bg-gradient-to-r from-primary to-accent"
                 >
                   <Icon name="CreditCard" size={20} /> Купить
                 </Button>
@@ -338,16 +367,17 @@ const AuthModal = ({
   const [err, setErr] = useState<string | null>(null);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 animate-fade-in">
-      <div className="w-full max-w-sm rounded-2xl bg-card border border-primary/40 p-7 neon-box animate-scale-in">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="font-display text-xl font-black uppercase neon-text">
-            Вход / Регистрация
-          </h3>
-          <button onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in">
+      <div className="w-full max-w-sm rounded-2xl glass p-7 neon-box animate-scale-in">
+        <div className="flex items-center justify-between mb-5">
+          <img src={LOGO} alt="TEKKO AKKZ" className="h-9 w-auto object-contain" />
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
             <Icon name="X" size={20} />
           </button>
         </div>
+        <h3 className="font-display text-xl font-black uppercase chrome-text mb-5">
+          Вход / Регистрация
+        </h3>
         <div className="space-y-3">
           <Input
             placeholder="Логин"
@@ -362,7 +392,7 @@ const AuthModal = ({
           />
           {err && <p className="text-destructive text-sm">{err}</p>}
           <Button
-            className="w-full font-display uppercase tracking-wider"
+            className="w-full font-display uppercase tracking-wider bg-gradient-to-r from-primary to-accent"
             onClick={() => {
               if (!login || !password) {
                 setErr('Заполните все поля');
@@ -404,13 +434,16 @@ const AdminPanel = ({
   const [local, setLocal] = useState<Settings>(settings);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/85 p-4 overflow-y-auto animate-fade-in">
-      <div className="w-full max-w-2xl my-8 rounded-2xl bg-card border border-primary/40 p-7 neon-box">
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/85 backdrop-blur-sm p-4 overflow-y-auto animate-fade-in">
+      <div className="w-full max-w-2xl my-8 rounded-2xl glass p-7 neon-box">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="font-display text-2xl font-black uppercase neon-text">
-            Админ-панель
-          </h3>
-          <button onClick={onClose}>
+          <div className="flex items-center gap-3">
+            <img src={LOGO} alt="TEKKO AKKZ" className="h-9 w-auto object-contain" />
+            <h3 className="font-display text-2xl font-black uppercase chrome-text">
+              Админка
+            </h3>
+          </div>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
             <Icon name="X" size={22} />
           </button>
         </div>
